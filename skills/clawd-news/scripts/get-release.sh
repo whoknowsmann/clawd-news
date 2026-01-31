@@ -66,7 +66,7 @@ check_auth
 requested_tag="$1"
 
 if [ "$requested_tag" = "latest" ]; then
-  releases_json=$(gh release list --repo "$repo" --json tagName,name,publishedAt,url,isPrerelease --limit 20)
+  releases_json=$(gh release list --repo "$repo" --json tagName,name,publishedAt,isPrerelease --limit 20)
   jq -e . <<<"$releases_json" >/dev/null || die "Invalid JSON from gh release list for $repo"
   if [ "$include_prereleases" = true ]; then
     requested_tag=$(jq -r '.[0].tagName // empty' <<<"$releases_json")

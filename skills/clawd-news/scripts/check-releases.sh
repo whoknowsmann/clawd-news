@@ -91,7 +91,7 @@ repos_checked=()
 
 for repo in "${repos[@]}"; do
   repos_checked+=("$repo")
-  releases_json=$(gh release list --repo "$repo" --json tagName,name,publishedAt,url,isPrerelease --limit 20)
+  releases_json=$(gh release list --repo "$repo" --json tagName,name,publishedAt,isPrerelease --limit 20)
   jq -e . <<<"$releases_json" >/dev/null || die "Invalid JSON from gh release list for $repo"
 
   if [ "$include_prereleases" = true ]; then
@@ -107,7 +107,7 @@ for repo in "${repos[@]}"; do
   tag=$(jq -r '.tagName' <<<"$latest_release")
   name=$(jq -r '.name' <<<"$latest_release")
   published_at=$(jq -r '.publishedAt' <<<"$latest_release")
-  url=$(jq -r '.url' <<<"$latest_release")
+  url="https://github.com/$repo/releases/tag/$tag"
 
   last_seen_published=$(jq -r --arg repo "$repo" '.lastSeenByRepo[$repo].lastReleasePublishedAt // empty' <<<"$state_json")
 
